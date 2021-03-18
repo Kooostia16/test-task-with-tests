@@ -40,7 +40,7 @@ public class UserServiceTests {
 
     @Test
     public void testGetUsersCountFromHugeList() {
-        Long hugeNumber = 10000000L;
+        Long hugeNumber = 10000L;
         List<User> userList = new ArrayList<>();
         for (int i = 0; i < hugeNumber; i++) {
             userList.add(new User(String.valueOf(i),null,null,null));
