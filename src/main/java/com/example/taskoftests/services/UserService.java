@@ -5,13 +5,10 @@ import com.example.taskoftests.dto.UsersAmount;
 import com.example.taskoftests.exceptions.OnNegativeValueException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -20,50 +17,35 @@ public class UserService {
     @Value("${testtask.text}")
     public String changeText;
 
-    @Value("${testtask.url}")
-    public String url;
-
-    private final RestTemplate rt;
-
-    static ParameterizedTypeReference<List<User>> typeRef = new ParameterizedTypeReference<List<User>>() {};
-    static List<User> ulist;
-
-    public List<User> getUsersFrom() {
-
-        try {
-            ResponseEntity<List<User>> respEnt = rt.exchange(url, HttpMethod.GET, null, typeRef);
-            return respEnt.getBody();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-
-    }
+    private final RequestService requestService;
 
     public UsersAmount getUsersAmount() {
+        List<User> users = requestService.getUsers();
 
-        ulist = getUsersFrom();
+        long usersCount = users.stream()
+                .map(User::getUserId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .count();
 
-        Map<String, User> hm = new HashMap<>();
-        ulist.stream().map(s -> hm.put(s.getUserId(),s)).count();
-        long usersN = hm.size();
-
-        return new UsersAmount(usersN);
+        return new UsersAmount(usersCount);
     }
 
-    public List<User> getNthUserAndChange(String nn) {
+    public List<User> getNthUserAndChange(Integer userToModify) {
 
-        ulist = getUsersFrom();
+        List<User> users = requestService.getUsers();
 
-        int n = Integer.parseInt(nn)-1;
+        if (userToModify < 0) {
+            throw new OnNegativeValueException();
+        }
 
-        if (n < 0) throw new OnNegativeValueException();
-        if (ulist.size()-1 < n) return ulist;
+        if (users.size() < userToModify) {
+            return users;
+        }
 
-        User u = ulist.get(n);
-        u.setBody(changeText);
-        u.setTitle(changeText);
+        User u = users.get(userToModify - 1);
+        u.setBodyAndTitleTo(changeText);
 
-        return ulist;
+        return users;
     }
 }

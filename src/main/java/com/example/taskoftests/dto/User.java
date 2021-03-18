@@ -12,4 +12,9 @@ public class User {
     private String id;
     private String body;
     private String title;
+
+    public void setBodyAndTitleTo(String text) {
+        this.title = text;
+        this.body = text;
+    }
 }

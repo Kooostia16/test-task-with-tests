@@ -14,23 +14,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-public class WithMockingTests {
+public class ControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     public void testGetCountOfUniqueUsers() throws Exception {
-        mockMvc.perform(get("/count").accept(MediaType.APPLICATION_JSON)).andExpect(content().json("{count: 10}"));
+        mockMvc.perform(get("/count").accept(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{count: 10}"));
     }
 
     @Test
     public void testPutUserWithPositiveValue() throws Exception {
-        mockMvc.perform(put("/change-user").param("n","2").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(put("/change-user").param("userToModify", "2")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void testPutUserWithNegativeValue() throws Exception {
-        mockMvc.perform(put("/change-user").param("n","-2").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+        mockMvc.perform(put("/change-user").param("userToModify", "-2")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

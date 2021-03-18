@@ -1,5 +1,5 @@
 package com.example.taskoftests.exceptions;
 
-public class OnNegativeValueException extends RuntimeException{
+public class OnNegativeValueException extends RuntimeException {
 
 }
