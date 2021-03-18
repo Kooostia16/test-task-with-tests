@@ -58,7 +58,7 @@ public class UserService {
         int n = Integer.parseInt(nn)-1;
 
         if (n < 0) throw new OnNegativeValueException();
-        if (ulist.size()-1 < n) return ulist;
+        if (ulist.size()-1 < n) return new ArrayList<>();
 
         User u = ulist.get(n);
         u.setBody(changeText);
