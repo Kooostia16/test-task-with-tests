@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,10 @@ public class UserService {
     public UsersAmount getUsersAmount() {
         List<User> users = requestService.getUsers();
 
+        if (users == null) {
+            users = new ArrayList<>();
+        }
+
         long usersCount = users.stream()
                 .map(User::getUserId)
                 .filter(Objects::nonNull)
@@ -32,8 +37,11 @@ public class UserService {
     }
 
     public List<User> getNthUserAndChange(Integer userToModify) {
-
         List<User> users = requestService.getUsers();
+
+        if (users == null) {
+            return new ArrayList<>();
+        }
 
         if (userToModify < 0) {
             throw new OnNegativeValueException();
