@@ -21,7 +21,7 @@ public class TestController {
     }
 
     @PutMapping("/change-user")
-    public List<User> updateUser(@RequestParam(name = "n",required = false,defaultValue = "3") String n) {
+    public List<User> updateUser(@RequestParam(name = "n",required = false,defaultValue = "4") String n) {
         return us.getNthUserAndChange(n);
     }
 }
