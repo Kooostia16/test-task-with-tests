@@ -1,47 +1,36 @@
 package com.example.taskoftests;
 
-import com.example.taskoftests.dto.User;
-import com.example.taskoftests.services.UserService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.Assert.assertTrue;
-
+@AutoConfigureMockMvc
+@SpringBootTest
 public class WithMockingTests {
 
-    static String url = "http://jsonplaceholder.typicode.com/posts";
-    static UserService hr = Mockito.mock(UserService.class);
+    @Autowired
+    private MockMvc mockMvc;
 
-    @BeforeAll
-    static public void mockingUsersWithMissingFields() {
-        List<User> users1 = new ArrayList<>();
-        users1.add(new User(null,null,null,null));
-        users1.add(new User("1","2",null,"test"));
-
-        Mockito.when(hr.getUsersFrom(url)).thenReturn(users1);
+    @Test
+    public void testGetCountOfUniqueUsers() throws Exception {
+        mockMvc.perform(get("/count").accept(MediaType.APPLICATION_JSON)).andExpect(content().json("{count: 10}"));
     }
 
     @Test
-    public void testUsersSize() {
-        List<User> users = hr.getUsersFrom(url);
-        assertTrue("users is empty!",users.size() > 0);
+    public void testPutUserWithPositiveValue() throws Exception {
+        mockMvc.perform(put("/change-user").param("n","2").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
-    public void testUser() {
-        List<User> users = hr.getUsersFrom(url);
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            assertTrue("user is null",user != null);
-            assertTrue("user id is null!",user.getId() != null);
-            assertTrue("user userid is null!",user.getUserId() != null);
-            assertTrue("user title is null!!",user.getTitle() != null);
-            assertTrue("user body is null!!",user.getBody() != null);
-        }
-
+    public void testPutUserWithNegativeValue() throws Exception {
+        mockMvc.perform(put("/change-user").param("n","-2").accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
     }
 }

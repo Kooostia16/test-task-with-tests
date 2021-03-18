@@ -1,13 +1,12 @@
 package com.example.taskoftests.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UsersAmount {
-    private long count;
-
-    public UsersAmount() {}
-
-    public UsersAmount(long i) { count = i; }
+    private Long count;
 }
